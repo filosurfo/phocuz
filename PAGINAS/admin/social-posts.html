@@ -1,0 +1,397 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="color-scheme" content="dark">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>PHO CUZ — Posts para Redes</title>
+  <link href="https://fonts.googleapis.com/css2?family=Cinzel+Decorative:wght@400;700&family=Cinzel:wght@400;500&family=Rajdhani:wght@300;400;500;600&display=swap" rel="stylesheet">
+  <style>
+    :root { --dorado: #C49A3C; --dorado-claro: #D4B896; --bg: #0a0300; --surface: #130601; --border: rgba(196,154,60,0.2); }
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    body { min-height: 100vh; background: var(--bg); font-family: 'Rajdhani', sans-serif; color: #d4c4a0; display: flex; }
+    .sidebar { width: 240px; min-height: 100vh; background: var(--surface); border-right: 1px solid var(--border); display: flex; flex-direction: column; padding: 2rem 0; position: fixed; top: 0; left: 0; bottom: 0; }
+    .sidebar-brand { text-align: center; padding: 0 1.5rem 2rem; border-bottom: 1px solid var(--border); margin-bottom: 1.5rem; }
+    .sidebar-brand .logo { font-family: 'Cinzel Decorative', serif; font-size: 1.1rem; letter-spacing: 4px; }
+    .sidebar-brand .logo .pho { color: var(--dorado); } .sidebar-brand .logo .cuz { color: #f5f0e8; }
+    .sidebar-brand .sub { font-size: 9px; letter-spacing: 4px; color: rgba(196,154,60,0.4); text-transform: uppercase; margin-top: 4px; }
+    .nav-section { padding: 0 1rem; margin-bottom: 0.5rem; }
+    .nav-label { font-size: 9px; letter-spacing: 3px; color: rgba(196,154,60,0.35); text-transform: uppercase; padding: 0 0.5rem; margin-bottom: 0.5rem; }
+    .nav-item { display: flex; align-items: center; gap: 0.7rem; padding: 0.65rem 0.8rem; border-radius: 3px; color: rgba(212,180,130,0.7); text-decoration: none; font-size: 0.9rem; letter-spacing: 1px; transition: all 0.15s; }
+    .nav-item:hover, .nav-item.active { background: rgba(196,154,60,0.08); color: var(--dorado); }
+    .nav-item .icon { font-size: 1rem; width: 20px; text-align: center; }
+    .sidebar-footer { margin-top: auto; padding: 1rem; border-top: 1px solid var(--border); }
+    .user-info { font-size: 0.8rem; color: rgba(196,154,60,0.5); letter-spacing: 1px; margin-bottom: 0.5rem; padding: 0 0.5rem; word-break: break-all; }
+    .btn-logout { display: block; width: 100%; padding: 0.5rem; background: transparent; border: 1px solid rgba(196,154,60,0.2); border-radius: 2px; color: rgba(196,154,60,0.5); font-family: 'Rajdhani', sans-serif; font-size: 0.8rem; letter-spacing: 3px; text-transform: uppercase; cursor: pointer; transition: all 0.2s; }
+    .btn-logout:hover { border-color: var(--dorado); color: var(--dorado); }
+    .main { margin-left: 240px; flex: 1; padding: 2.5rem; }
+    .page-title { font-family: 'Cinzel', serif; font-size: 1.4rem; color: var(--dorado); letter-spacing: 3px; margin-bottom: 0.3rem; }
+    .page-sub { font-size: 0.85rem; color: rgba(196,154,60,0.45); letter-spacing: 2px; margin-bottom: 2rem; }
+
+    .editor-grid { display: grid; grid-template-columns: 340px 1fr; gap: 2rem; align-items: start; }
+
+    /* CONTROLS */
+    .controls { background: var(--surface); border: 1px solid var(--border); border-radius: 4px; padding: 1.5rem; }
+    .ctrl-title { font-family: 'Cinzel', serif; font-size: 0.85rem; color: var(--dorado); letter-spacing: 3px; margin-bottom: 1.2rem; }
+    .form-group { margin-bottom: 1rem; }
+    .form-group label { display: block; font-size: 10px; letter-spacing: 3px; color: rgba(196,154,60,0.6); text-transform: uppercase; margin-bottom: 0.4rem; }
+    .form-group input, .form-group select, .form-group textarea {
+      width: 100%; background: rgba(255,255,255,0.04); border: 1px solid rgba(196,154,60,0.2); border-radius: 2px;
+      padding: 0.6rem 0.8rem; color: #f5f0e8; font-family: 'Rajdhani', sans-serif; font-size: 0.9rem; outline: none;
+    }
+    .form-group input:focus, .form-group select:focus, .form-group textarea:focus { border-color: var(--dorado); }
+    .form-group select option { background: #120601; }
+    .form-group textarea { resize: vertical; min-height: 60px; }
+
+    .color-row { display: grid; grid-template-columns: 1fr 1fr; gap: 0.8rem; }
+    .color-input-wrap { display: flex; align-items: center; gap: 0.5rem; }
+    .color-input-wrap input[type="color"] { width: 36px; height: 32px; padding: 2px; background: transparent; border: 1px solid var(--border); border-radius: 2px; cursor: pointer; }
+    .color-input-wrap input[type="text"] { flex: 1; }
+
+    .template-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 0.5rem; margin-bottom: 1rem; }
+    .tpl-btn { padding: 0.5rem; background: rgba(196,154,60,0.05); border: 1px solid var(--border); border-radius: 2px; color: var(--dorado-claro); font-family: 'Rajdhani', sans-serif; font-size: 0.78rem; letter-spacing: 1px; cursor: pointer; transition: all 0.15s; text-align: center; }
+    .tpl-btn:hover, .tpl-btn.active { background: rgba(196,154,60,0.12); border-color: var(--dorado); color: var(--dorado); }
+
+    .btn-download { width: 100%; margin-top: 1rem; padding: 0.75rem; background: var(--dorado); color: #0a0300; border: none; border-radius: 2px; font-family: 'Rajdhani', sans-serif; font-size: 0.85rem; letter-spacing: 4px; text-transform: uppercase; cursor: pointer; font-weight: 700; transition: opacity 0.2s; }
+    .btn-download:hover { opacity: 0.85; }
+
+    /* CANVAS PREVIEW */
+    .preview-wrap { position: sticky; top: 2rem; }
+    .preview-label { font-size: 10px; letter-spacing: 3px; color: rgba(196,154,60,0.4); text-transform: uppercase; margin-bottom: 0.8rem; }
+    #previewCanvas { width: 100%; max-width: 500px; border-radius: 4px; border: 1px solid var(--border); display: block; }
+    .format-tabs { display: flex; gap: 0.5rem; margin-bottom: 1rem; }
+    .fmt-tab { padding: 0.4rem 1rem; background: transparent; border: 1px solid var(--border); border-radius: 2px; color: rgba(196,154,60,0.5); font-family: 'Rajdhani', sans-serif; font-size: 0.8rem; letter-spacing: 2px; cursor: pointer; }
+    .fmt-tab.active { background: rgba(196,154,60,0.1); border-color: var(--dorado); color: var(--dorado); }
+  </style>
+</head>
+<body>
+
+  <aside class="sidebar">
+    <div class="sidebar-brand">
+      <div class="logo"><span class="pho">PHO</span><span class="cuz"> CUZ</span></div>
+      <div class="sub">Admin Panel</div>
+    </div>
+    <div class="nav-section">
+      <div class="nav-label">General</div>
+      <a href="dashboard.html" class="nav-item"><span class="icon">◆</span> Dashboard</a>
+      <a href="menu-editor.html" class="nav-item"><span class="icon">◎</span> Editor de Menú</a>
+      <a href="social-posts.html" class="nav-item active"><span class="icon">◈</span> Posts para Redes</a>
+    </div>
+    <div class="nav-section" id="adminSection" style="display:none;">
+      <div class="nav-label">Administración</div>
+      <a href="usuarios.html" class="nav-item"><span class="icon">◇</span> Usuarios</a>
+    </div>
+    <div class="sidebar-footer">
+      <div class="user-info" id="userEmail">—</div>
+      <button class="btn-logout" id="btnLogout">Cerrar sesión</button>
+    </div>
+  </aside>
+
+  <main class="main">
+    <div class="page-title">Posts para Redes Sociales</div>
+    <div class="page-sub">Genera imágenes para Instagram y Facebook — descarga y publica</div>
+
+    <div class="editor-grid">
+      <!-- CONTROLS -->
+      <div class="controls">
+        <div class="ctrl-title">Plantilla</div>
+        <div class="template-grid">
+          <button class="tpl-btn active" data-tpl="promo" onclick="setTemplate('promo',this)">◆ Promoción</button>
+          <button class="tpl-btn" data-tpl="nuevo" onclick="setTemplate('nuevo',this)">◎ Nuevo platillo</button>
+          <button class="tpl-btn" data-tpl="horario" onclick="setTemplate('horario',this)">◇ Horario</button>
+          <button class="tpl-btn" data-tpl="frase" onclick="setTemplate('frase',this)">◈ Frase</button>
+        </div>
+
+        <div class="ctrl-title" style="margin-top:1rem;">Formato</div>
+        <div class="format-tabs" style="margin-bottom:1rem;">
+          <button class="fmt-tab active" onclick="setFormat(1,1,this)">1:1 Feed</button>
+          <button class="fmt-tab" onclick="setFormat(9,16,this)">9:16 Story</button>
+          <button class="fmt-tab" onclick="setFormat(1.91,1,this)">1.91:1 Banner</button>
+        </div>
+
+        <div class="form-group">
+          <label>Título principal</label>
+          <input type="text" id="fTitulo" value="PHO CUZ" oninput="render()">
+        </div>
+        <div class="form-group">
+          <label>Subtítulo / Descripción</label>
+          <textarea id="fSubtitulo" oninput="render()">La sopa que te enfoca, cuz.</textarea>
+        </div>
+        <div class="form-group">
+          <label>Texto inferior (precio, CTA, etc.)</label>
+          <input type="text" id="fBadge" value="Desde $150 MXN" oninput="render()">
+        </div>
+        <div class="form-group">
+          <label>URL imagen de fondo (opcional)</label>
+          <input type="url" id="fBgImage" placeholder="https://..." oninput="loadBgImage()">
+        </div>
+
+        <div class="ctrl-title" style="margin-top:1rem;">Colores</div>
+        <div class="color-row">
+          <div class="form-group">
+            <label>Fondo</label>
+            <div class="color-input-wrap">
+              <input type="color" id="cBg" value="#1a0502" oninput="syncColor('cBg','cBgHex');render()">
+              <input type="text" id="cBgHex" value="#1a0502" oninput="syncColor('cBgHex','cBg');render()" maxlength="7">
+            </div>
+          </div>
+          <div class="form-group">
+            <label>Acento</label>
+            <div class="color-input-wrap">
+              <input type="color" id="cAccent" value="#C49A3C" oninput="syncColor('cAccent','cAccentHex');render()">
+              <input type="text" id="cAccentHex" value="#C49A3C" oninput="syncColor('cAccentHex','cAccent');render()" maxlength="7">
+            </div>
+          </div>
+        </div>
+
+        <button class="btn-download" onclick="downloadImage()">⬇ Descargar imagen</button>
+      </div>
+
+      <!-- PREVIEW -->
+      <div class="preview-wrap">
+        <div class="preview-label">Vista previa</div>
+        <canvas id="previewCanvas"></canvas>
+      </div>
+    </div>
+  </main>
+
+  <script type="module">
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js";
+    import { getAuth, signOut } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-auth.js";
+    import { getFirestore, doc, getDoc } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js";
+
+    const firebaseConfig = {
+      apiKey: "AIzaSyB6Yh15hdO_PWoPanPcuCwzV8PDnslLqoE",
+      authDomain: "phocuz.firebaseapp.com",
+      projectId: "phocuz",
+      storageBucket: "phocuz.firebasestorage.app",
+      messagingSenderId: "241068135242",
+      appId: "1:241068135242:web:93341c5ee0bcbcb5a3e7b3"
+    };
+
+    const app = initializeApp(firebaseConfig);
+    const auth = getAuth(app);
+    const db = getFirestore(app);
+
+    auth.onAuthStateChanged(async user => {
+      if (!user) { window.location.href = "login.html"; return; }
+      const adminDoc = await getDoc(doc(db, "admins", user.uid));
+      if (!adminDoc.exists()) { await signOut(auth); window.location.href = "login.html"; return; }
+      if (adminDoc.data().role === "global_admin") document.getElementById("adminSection").style.display = "block";
+      document.getElementById("userEmail").textContent = user.email;
+    });
+
+    document.getElementById("btnLogout").addEventListener("click", async () => {
+      await signOut(auth);
+      window.location.href = "login.html";
+    });
+  </script>
+
+  <script>
+    const canvas = document.getElementById("previewCanvas");
+    const ctx = canvas.getContext("2d");
+    let aspectW = 1, aspectH = 1;
+    let bgImg = null;
+    let currentTemplate = "promo";
+
+    function setCanvasSize() {
+      const BASE = 1080;
+      canvas.width = BASE;
+      canvas.height = Math.round(BASE * (aspectH / aspectW));
+    }
+
+    function setFormat(w, h, btn) {
+      aspectW = w; aspectH = h;
+      document.querySelectorAll('.fmt-tab').forEach(b => b.classList.remove('active'));
+      btn.classList.add('active');
+      setCanvasSize();
+      render();
+    }
+
+    function setTemplate(tpl, btn) {
+      currentTemplate = tpl;
+      document.querySelectorAll('.tpl-btn').forEach(b => b.classList.remove('active'));
+      btn.classList.add('active');
+      const templates = {
+        promo: { titulo: '🔥 Promoción Especial', sub: 'Pho de 3 proteínas\nSolo por hoy', badge: '$250 MXN' },
+        nuevo: { titulo: 'Nuevo en el Menú', sub: 'Prueba nuestra nueva combinación\nNo te la pierdas', badge: 'Disponible ahora' },
+        horario: { titulo: 'Horario', sub: 'Lun–Vie: 12pm – 9pm\nSáb–Dom: 10am – 10pm', badge: 'Tecate, B.C.' },
+        frase: { titulo: 'PHO CUZ', sub: 'La sopa que te enfoca, cuz.', badge: 'TIERRA · CALIDEZ · APETITO' },
+      };
+      const t = templates[tpl];
+      document.getElementById("fTitulo").value = t.titulo;
+      document.getElementById("fSubtitulo").value = t.sub;
+      document.getElementById("fBadge").value = t.badge;
+      render();
+    }
+
+    function syncColor(from, to) {
+      const val = document.getElementById(from).value;
+      if (/^#[0-9A-Fa-f]{6}$/.test(val)) document.getElementById(to).value = val;
+    }
+
+    function loadBgImage() {
+      const url = document.getElementById("fBgImage").value.trim();
+      if (!url) { bgImg = null; render(); return; }
+      const img = new Image();
+      img.crossOrigin = "anonymous";
+      img.onload = () => { bgImg = img; render(); };
+      img.onerror = () => { bgImg = null; render(); };
+      img.src = url;
+    }
+
+    function wrapText(ctx, text, x, y, maxWidth, lineHeight) {
+      const lines = text.split('\n');
+      let totalY = y;
+      lines.forEach(line => {
+        const words = line.split(' ');
+        let currentLine = '';
+        words.forEach(word => {
+          const test = currentLine ? currentLine + ' ' + word : word;
+          if (ctx.measureText(test).width > maxWidth && currentLine) {
+            ctx.fillText(currentLine, x, totalY);
+            currentLine = word;
+            totalY += lineHeight;
+          } else {
+            currentLine = test;
+          }
+        });
+        if (currentLine) { ctx.fillText(currentLine, x, totalY); totalY += lineHeight; }
+      });
+      return totalY;
+    }
+
+    function render() {
+      const W = canvas.width, H = canvas.height;
+      const bgColor = document.getElementById("cBg").value;
+      const accent = document.getElementById("cAccent").value;
+      const titulo = document.getElementById("fTitulo").value;
+      const sub = document.getElementById("fSubtitulo").value;
+      const badge = document.getElementById("fBadge").value;
+
+      ctx.clearRect(0, 0, W, H);
+
+      // Background
+      if (bgImg) {
+        const scale = Math.max(W / bgImg.width, H / bgImg.height);
+        const bw = bgImg.width * scale, bh = bgImg.height * scale;
+        ctx.drawImage(bgImg, (W - bw) / 2, (H - bh) / 2, bw, bh);
+        // Overlay
+        const grad = ctx.createLinearGradient(0, 0, 0, H);
+        grad.addColorStop(0, 'rgba(15,3,0,0.6)');
+        grad.addColorStop(1, 'rgba(15,3,0,0.85)');
+        ctx.fillStyle = grad;
+        ctx.fillRect(0, 0, W, H);
+      } else {
+        const grad = ctx.createRadialGradient(W/2, H*0.3, 0, W/2, H*0.3, W*0.8);
+        grad.addColorStop(0, shiftColor(bgColor, 30));
+        grad.addColorStop(1, bgColor);
+        ctx.fillStyle = grad;
+        ctx.fillRect(0, 0, W, H);
+      }
+
+      const pad = W * 0.1;
+
+      // Decorative top line
+      ctx.strokeStyle = accent;
+      ctx.lineWidth = 3;
+      ctx.beginPath();
+      ctx.moveTo(pad, H * 0.08);
+      ctx.lineTo(W - pad, H * 0.08);
+      ctx.stroke();
+
+      // Logo text small
+      ctx.font = `${W * 0.03}px 'Cinzel Decorative', serif`;
+      ctx.fillStyle = accent;
+      ctx.textAlign = "center";
+      ctx.fillText("PHO", W/2 - W*0.05, H * 0.15);
+      ctx.fillStyle = "#f5f0e8";
+      ctx.fillText("CUZ", W/2 + W*0.08, H * 0.15);
+
+      // Main title
+      ctx.font = `bold ${W * 0.085}px 'Cinzel', serif`;
+      ctx.fillStyle = "#f5f0e8";
+      ctx.textAlign = "center";
+      const titleSize = W * 0.085;
+      ctx.font = `bold ${titleSize}px 'Cinzel', serif`;
+      // Auto-shrink if too long
+      while (ctx.measureText(titulo).width > W * 0.85 && titleSize > 30) {
+        ctx.font = `bold ${titleSize - 2}px 'Cinzel', serif`;
+      }
+      ctx.fillText(titulo, W / 2, H * 0.42);
+
+      // Decorative line
+      ctx.strokeStyle = accent;
+      ctx.lineWidth = 1;
+      ctx.globalAlpha = 0.5;
+      ctx.beginPath();
+      ctx.moveTo(pad * 1.5, H * 0.48);
+      ctx.lineTo(W - pad * 1.5, H * 0.48);
+      ctx.stroke();
+      ctx.globalAlpha = 1;
+
+      // Subtitle
+      ctx.font = `${W * 0.042}px 'Rajdhani', sans-serif`;
+      ctx.fillStyle = "#d4b896";
+      ctx.textAlign = "center";
+      ctx.letterSpacing = "2px";
+      wrapText(ctx, sub, W/2, H * 0.57, W * 0.8, W * 0.055);
+
+      // Badge / bottom text
+      if (badge) {
+        const bPad = W * 0.06;
+        const bH = H * 0.07;
+        const bY = H * 0.82;
+        const bW = ctx.measureText(badge).width + bPad * 2;
+        ctx.fillStyle = accent;
+        ctx.fillRect(W/2 - bW/2, bY - bH * 0.75, bW, bH);
+        ctx.font = `600 ${W * 0.042}px 'Rajdhani', sans-serif`;
+        ctx.fillStyle = "#0a0300";
+        ctx.textAlign = "center";
+        ctx.fillText(badge, W/2, bY);
+      }
+
+      // Bottom tagline
+      ctx.font = `${W * 0.025}px 'Rajdhani', sans-serif`;
+      ctx.fillStyle = "rgba(196,154,60,0.45)";
+      ctx.fillText("TIERRA · CALIDEZ · APETITO", W/2, H * 0.94);
+
+      // Decorative bottom line
+      ctx.strokeStyle = accent;
+      ctx.globalAlpha = 0.3;
+      ctx.lineWidth = 1;
+      ctx.beginPath();
+      ctx.moveTo(pad, H * 0.96);
+      ctx.lineTo(W - pad, H * 0.96);
+      ctx.stroke();
+      ctx.globalAlpha = 1;
+    }
+
+    function shiftColor(hex, amount) {
+      const num = parseInt(hex.replace('#',''), 16);
+      const r = Math.min(255, ((num >> 16) & 0xff) + amount);
+      const g = Math.min(255, ((num >> 8) & 0xff) + amount);
+      const b = Math.min(255, (num & 0xff) + amount);
+      return `rgb(${r},${g},${b})`;
+    }
+
+    window.downloadImage = () => {
+      const link = document.createElement("a");
+      link.download = `phocuz-post-${Date.now()}.png`;
+      link.href = canvas.toDataURL("image/png");
+      link.click();
+    };
+
+    window.setTemplate = setTemplate;
+    window.setFormat = setFormat;
+    window.syncColor = syncColor;
+    window.loadBgImage = loadBgImage;
+    window.render = render;
+    window.downloadImage = window.downloadImage;
+
+    setCanvasSize();
+    render();
+  </script>
+
+</body>
+</html>

@@ -1,0 +1,335 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="color-scheme" content="dark">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>PHO CUZ — Editor de Menú</title>
+  <link href="https://fonts.googleapis.com/css2?family=Cinzel+Decorative:wght@400;700&family=Cinzel:wght@400;500&family=Rajdhani:wght@300;400;500;600&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --dorado: #C49A3C;
+      --dorado-claro: #D4B896;
+      --bg: #0a0300;
+      --surface: #130601;
+      --surface2: #1a0a03;
+      --border: rgba(196,154,60,0.2);
+    }
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    body { min-height: 100vh; background: var(--bg); font-family: 'Rajdhani', sans-serif; color: #d4c4a0; display: flex; }
+
+    /* SIDEBAR */
+    .sidebar { width: 240px; min-height: 100vh; background: var(--surface); border-right: 1px solid var(--border); display: flex; flex-direction: column; padding: 2rem 0; position: fixed; top: 0; left: 0; bottom: 0; }
+    .sidebar-brand { text-align: center; padding: 0 1.5rem 2rem; border-bottom: 1px solid var(--border); margin-bottom: 1.5rem; }
+    .sidebar-brand .logo { font-family: 'Cinzel Decorative', serif; font-size: 1.1rem; letter-spacing: 4px; }
+    .sidebar-brand .logo .pho { color: var(--dorado); }
+    .sidebar-brand .logo .cuz { color: #f5f0e8; }
+    .sidebar-brand .sub { font-size: 9px; letter-spacing: 4px; color: rgba(196,154,60,0.4); text-transform: uppercase; margin-top: 4px; }
+    .nav-section { padding: 0 1rem; margin-bottom: 0.5rem; }
+    .nav-label { font-size: 9px; letter-spacing: 3px; color: rgba(196,154,60,0.35); text-transform: uppercase; padding: 0 0.5rem; margin-bottom: 0.5rem; }
+    .nav-item { display: flex; align-items: center; gap: 0.7rem; padding: 0.65rem 0.8rem; border-radius: 3px; color: rgba(212,180,130,0.7); text-decoration: none; font-size: 0.9rem; letter-spacing: 1px; transition: all 0.15s; }
+    .nav-item:hover, .nav-item.active { background: rgba(196,154,60,0.08); color: var(--dorado); }
+    .nav-item .icon { font-size: 1rem; width: 20px; text-align: center; }
+    .sidebar-footer { margin-top: auto; padding: 1rem; border-top: 1px solid var(--border); }
+    .user-info { font-size: 0.8rem; color: rgba(196,154,60,0.5); letter-spacing: 1px; margin-bottom: 0.5rem; padding: 0 0.5rem; word-break: break-all; }
+    .btn-logout { display: block; width: 100%; padding: 0.5rem; background: transparent; border: 1px solid rgba(196,154,60,0.2); border-radius: 2px; color: rgba(196,154,60,0.5); font-family: 'Rajdhani', sans-serif; font-size: 0.8rem; letter-spacing: 3px; text-transform: uppercase; cursor: pointer; transition: all 0.2s; }
+    .btn-logout:hover { border-color: var(--dorado); color: var(--dorado); }
+
+    /* MAIN */
+    .main { margin-left: 240px; flex: 1; padding: 2.5rem; }
+    .page-title { font-family: 'Cinzel', serif; font-size: 1.4rem; color: var(--dorado); letter-spacing: 3px; margin-bottom: 0.3rem; }
+    .page-sub { font-size: 0.85rem; color: rgba(196,154,60,0.45); letter-spacing: 2px; margin-bottom: 2rem; }
+
+    .toolbar { display: flex; gap: 1rem; margin-bottom: 1.5rem; align-items: center; flex-wrap: wrap; }
+    .btn-primary { padding: 0.6rem 1.5rem; background: var(--dorado); color: #0a0300; border: none; border-radius: 2px; font-family: 'Rajdhani', sans-serif; font-size: 0.85rem; letter-spacing: 3px; text-transform: uppercase; cursor: pointer; font-weight: 600; transition: opacity 0.2s; }
+    .btn-primary:hover { opacity: 0.85; }
+    .filter-select { padding: 0.6rem 1rem; background: var(--surface); border: 1px solid var(--border); border-radius: 2px; color: var(--dorado-claro); font-family: 'Rajdhani', sans-serif; font-size: 0.85rem; letter-spacing: 1px; outline: none; cursor: pointer; }
+
+    /* TABLE */
+    .table-wrap { background: var(--surface); border: 1px solid var(--border); border-radius: 4px; overflow: hidden; }
+    table { width: 100%; border-collapse: collapse; }
+    th { padding: 0.8rem 1rem; font-size: 10px; letter-spacing: 3px; color: rgba(196,154,60,0.5); text-transform: uppercase; text-align: left; border-bottom: 1px solid var(--border); background: rgba(196,154,60,0.03); }
+    td { padding: 0.9rem 1rem; font-size: 0.9rem; border-bottom: 1px solid rgba(196,154,60,0.06); vertical-align: middle; }
+    tr:last-child td { border-bottom: none; }
+    tr:hover td { background: rgba(196,154,60,0.02); }
+    .badge-on { display: inline-block; padding: 2px 10px; background: rgba(80,160,80,0.15); border: 1px solid rgba(80,160,80,0.3); border-radius: 20px; font-size: 10px; letter-spacing: 2px; color: #80c080; }
+    .badge-off { display: inline-block; padding: 2px 10px; background: rgba(160,80,80,0.15); border: 1px solid rgba(160,80,80,0.3); border-radius: 20px; font-size: 10px; letter-spacing: 2px; color: #c08080; }
+    .img-thumb { width: 48px; height: 48px; object-fit: cover; border-radius: 4px; border: 1px solid var(--border); }
+    .img-placeholder { width: 48px; height: 48px; background: rgba(196,154,60,0.08); border: 1px solid var(--border); border-radius: 4px; display: flex; align-items: center; justify-content: center; color: rgba(196,154,60,0.3); font-size: 1.2rem; }
+    .btn-edit { padding: 0.3rem 0.8rem; background: transparent; border: 1px solid rgba(196,154,60,0.3); border-radius: 2px; color: var(--dorado); font-family: 'Rajdhani', sans-serif; font-size: 0.75rem; letter-spacing: 2px; cursor: pointer; transition: all 0.15s; margin-right: 0.3rem; }
+    .btn-edit:hover { background: rgba(196,154,60,0.08); }
+    .btn-delete { padding: 0.3rem 0.8rem; background: transparent; border: 1px solid rgba(160,60,60,0.3); border-radius: 2px; color: #c07070; font-family: 'Rajdhani', sans-serif; font-size: 0.75rem; letter-spacing: 2px; cursor: pointer; transition: all 0.15s; }
+    .btn-delete:hover { background: rgba(160,60,60,0.08); }
+    .empty-state { text-align: center; padding: 4rem 2rem; color: rgba(196,154,60,0.3); font-size: 0.9rem; letter-spacing: 2px; }
+
+    /* MODAL */
+    .modal-overlay { display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.75); z-index: 100; align-items: center; justify-content: center; }
+    .modal-overlay.open { display: flex; }
+    .modal { background: #120601; border: 1px solid rgba(196,154,60,0.25); border-radius: 4px; padding: 2rem; width: 100%; max-width: 520px; max-height: 90vh; overflow-y: auto; }
+    .modal-title { font-family: 'Cinzel', serif; color: var(--dorado); letter-spacing: 3px; margin-bottom: 1.5rem; font-size: 1rem; }
+    .form-row { display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; }
+    .form-group { margin-bottom: 1.1rem; }
+    .form-group label { display: block; font-size: 10px; letter-spacing: 3px; color: rgba(196,154,60,0.6); text-transform: uppercase; margin-bottom: 0.4rem; }
+    .form-group input, .form-group select, .form-group textarea { width: 100%; background: rgba(255,255,255,0.04); border: 1px solid rgba(196,154,60,0.2); border-radius: 2px; padding: 0.65rem 0.8rem; color: #f5f0e8; font-family: 'Rajdhani', sans-serif; font-size: 0.9rem; outline: none; transition: border-color 0.2s; }
+    .form-group input:focus, .form-group select:focus, .form-group textarea:focus { border-color: var(--dorado); }
+    .form-group select option { background: #120601; }
+    .form-group textarea { resize: vertical; min-height: 70px; }
+    .toggle-row { display: flex; align-items: center; justify-content: space-between; padding: 0.7rem 0; border-top: 1px solid var(--border); margin-top: 0.5rem; }
+    .toggle-label { font-size: 0.9rem; letter-spacing: 1px; }
+    .toggle { position: relative; width: 44px; height: 24px; }
+    .toggle input { opacity: 0; width: 0; height: 0; }
+    .toggle-slider { position: absolute; inset: 0; background: rgba(255,255,255,0.1); border-radius: 24px; cursor: pointer; transition: 0.2s; }
+    .toggle-slider:before { content: ''; position: absolute; width: 18px; height: 18px; left: 3px; top: 3px; background: white; border-radius: 50%; transition: 0.2s; }
+    .toggle input:checked + .toggle-slider { background: var(--dorado); }
+    .toggle input:checked + .toggle-slider:before { transform: translateX(20px); }
+    .modal-actions { display: flex; gap: 0.8rem; margin-top: 1.5rem; justify-content: flex-end; }
+    .btn-cancel { padding: 0.6rem 1.2rem; background: transparent; border: 1px solid var(--border); border-radius: 2px; color: rgba(196,154,60,0.5); font-family: 'Rajdhani', sans-serif; font-size: 0.8rem; letter-spacing: 2px; cursor: pointer; }
+    .btn-cancel:hover { border-color: var(--dorado); color: var(--dorado); }
+  </style>
+</head>
+<body>
+
+  <aside class="sidebar">
+    <div class="sidebar-brand">
+      <div class="logo"><span class="pho">PHO</span><span class="cuz"> CUZ</span></div>
+      <div class="sub">Admin Panel</div>
+    </div>
+    <div class="nav-section">
+      <div class="nav-label">General</div>
+      <a href="dashboard.html" class="nav-item"><span class="icon">◆</span> Dashboard</a>
+      <a href="menu-editor.html" class="nav-item active"><span class="icon">◎</span> Editor de Menú</a>
+      <a href="social-posts.html" class="nav-item"><span class="icon">◈</span> Posts para Redes</a>
+    </div>
+    <div class="nav-section" id="adminSection" style="display:none;">
+      <div class="nav-label">Administración</div>
+      <a href="usuarios.html" class="nav-item"><span class="icon">◇</span> Usuarios</a>
+    </div>
+    <div class="sidebar-footer">
+      <div class="user-info" id="userEmail">—</div>
+      <button class="btn-logout" id="btnLogout">Cerrar sesión</button>
+    </div>
+  </aside>
+
+  <main class="main">
+    <div class="page-title">Editor de Menú</div>
+    <div class="page-sub">Gestiona los platillos del menú de PHO CUZ</div>
+
+    <div class="toolbar">
+      <button class="btn-primary" id="btnNuevo">+ Nuevo platillo</button>
+      <select class="filter-select" id="filterCat">
+        <option value="">Todas las categorías</option>
+        <option value="pollo">Pollo</option>
+        <option value="res">Res</option>
+        <option value="cerdo">Cerdo</option>
+        <option value="camaron">Camarón</option>
+        <option value="especial">Especial</option>
+        <option value="extra">Extra / Complemento</option>
+      </select>
+    </div>
+
+    <div class="table-wrap">
+      <table>
+        <thead>
+          <tr>
+            <th>Imagen</th>
+            <th>Nombre</th>
+            <th>Categoría</th>
+            <th>Precio</th>
+            <th>Estado</th>
+            <th>Acciones</th>
+          </tr>
+        </thead>
+        <tbody id="menuTableBody">
+          <tr><td colspan="6" class="empty-state">Cargando platillos...</td></tr>
+        </tbody>
+      </table>
+    </div>
+  </main>
+
+  <!-- MODAL -->
+  <div class="modal-overlay" id="modalOverlay">
+    <div class="modal">
+      <div class="modal-title" id="modalTitle">Nuevo Platillo</div>
+      <div class="form-row">
+        <div class="form-group">
+          <label>Nombre</label>
+          <input type="text" id="fNombre" placeholder="Ej: Pho de Pollo">
+        </div>
+        <div class="form-group">
+          <label>Categoría</label>
+          <select id="fCategoria">
+            <option value="pollo">Pollo</option>
+            <option value="res">Res</option>
+            <option value="cerdo">Cerdo</option>
+            <option value="camaron">Camarón</option>
+            <option value="especial">Especial</option>
+            <option value="extra">Extra / Complemento</option>
+          </select>
+        </div>
+      </div>
+      <div class="form-row">
+        <div class="form-group">
+          <label>Precio chico (MXN)</label>
+          <input type="number" id="fPrecioMin" placeholder="150">
+        </div>
+        <div class="form-group">
+          <label>Precio grande (MXN)</label>
+          <input type="number" id="fPrecioMax" placeholder="170">
+        </div>
+      </div>
+      <div class="form-group">
+        <label>Descripción</label>
+        <textarea id="fDescripcion" placeholder="Descripción del platillo..."></textarea>
+      </div>
+      <div class="form-group">
+        <label>URL de imagen</label>
+        <input type="url" id="fImagen" placeholder="https://... (sube la foto a Google Drive y pega el link)">
+      </div>
+      <div class="toggle-row">
+        <span class="toggle-label">Disponible en menú</span>
+        <label class="toggle">
+          <input type="checkbox" id="fAvailable" checked>
+          <span class="toggle-slider"></span>
+        </label>
+      </div>
+      <div class="modal-actions">
+        <button class="btn-cancel" id="btnCancelar">Cancelar</button>
+        <button class="btn-primary" id="btnGuardar">Guardar</button>
+      </div>
+    </div>
+  </div>
+
+  <script type="module">
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js";
+    import { getAuth, signOut } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-auth.js";
+    import { getFirestore, collection, getDocs, addDoc, doc, updateDoc, deleteDoc, getDoc, query, where, orderBy } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js";
+
+    const firebaseConfig = {
+      apiKey: "AIzaSyB6Yh15hdO_PWoPanPcuCwzV8PDnslLqoE",
+      authDomain: "phocuz.firebaseapp.com",
+      projectId: "phocuz",
+      storageBucket: "phocuz.firebasestorage.app",
+      messagingSenderId: "241068135242",
+      appId: "1:241068135242:web:93341c5ee0bcbcb5a3e7b3"
+    };
+
+    const app = initializeApp(firebaseConfig);
+    const auth = getAuth(app);
+    const db = getFirestore(app);
+
+    let currentDocId = null;
+    let allItems = [];
+
+    auth.onAuthStateChanged(async user => {
+      if (!user) { window.location.href = "login.html"; return; }
+      const adminDoc = await getDoc(doc(db, "admins", user.uid));
+      if (!adminDoc.exists()) { await signOut(auth); window.location.href = "login.html"; return; }
+      const role = adminDoc.data().role;
+      document.getElementById("userEmail").textContent = user.email;
+      if (role === "global_admin") document.getElementById("adminSection").style.display = "block";
+      loadMenu();
+    });
+
+    async function loadMenu() {
+      const snap = await getDocs(collection(db, "menu"));
+      allItems = [];
+      snap.forEach(d => allItems.push({ id: d.id, ...d.data() }));
+      renderTable(allItems);
+    }
+
+    function renderTable(items) {
+      const tbody = document.getElementById("menuTableBody");
+      if (items.length === 0) {
+        tbody.innerHTML = '<tr><td colspan="6" class="empty-state">No hay platillos. Agrega el primero →</td></tr>';
+        return;
+      }
+      tbody.innerHTML = items.map(item => `
+        <tr>
+          <td>${item.imageUrl ? `<img src="${item.imageUrl}" class="img-thumb" onerror="this.style.display='none'">` : '<div class="img-placeholder">◎</div>'}</td>
+          <td style="font-weight:600;color:#f5f0e8;">${item.nombre}</td>
+          <td style="color:var(--dorado-claro);text-transform:capitalize;">${item.categoria}</td>
+          <td>$${item.precioMin}${item.precioMax ? ' – $' + item.precioMax : ''} MXN</td>
+          <td><span class="${item.available ? 'badge-on' : 'badge-off'}">${item.available ? 'Activo' : 'Inactivo'}</span></td>
+          <td>
+            <button class="btn-edit" onclick="editItem('${item.id}')">Editar</button>
+            <button class="btn-delete" onclick="deleteItem('${item.id}')">Eliminar</button>
+          </td>
+        </tr>
+      `).join('');
+    }
+
+    document.getElementById("filterCat").addEventListener("change", e => {
+      const cat = e.target.value;
+      renderTable(cat ? allItems.filter(i => i.categoria === cat) : allItems);
+    });
+
+    // Modal
+    function openModal(title) {
+      document.getElementById("modalTitle").textContent = title;
+      document.getElementById("modalOverlay").classList.add("open");
+    }
+    function closeModal() {
+      document.getElementById("modalOverlay").classList.remove("open");
+      currentDocId = null;
+      document.getElementById("fNombre").value = "";
+      document.getElementById("fDescripcion").value = "";
+      document.getElementById("fImagen").value = "";
+      document.getElementById("fPrecioMin").value = "";
+      document.getElementById("fPrecioMax").value = "";
+      document.getElementById("fAvailable").checked = true;
+    }
+
+    document.getElementById("btnNuevo").addEventListener("click", () => openModal("Nuevo Platillo"));
+    document.getElementById("btnCancelar").addEventListener("click", closeModal);
+    document.getElementById("modalOverlay").addEventListener("click", e => { if (e.target === e.currentTarget) closeModal(); });
+
+    window.editItem = (id) => {
+      const item = allItems.find(i => i.id === id);
+      if (!item) return;
+      currentDocId = id;
+      document.getElementById("fNombre").value = item.nombre || "";
+      document.getElementById("fCategoria").value = item.categoria || "pollo";
+      document.getElementById("fPrecioMin").value = item.precioMin || "";
+      document.getElementById("fPrecioMax").value = item.precioMax || "";
+      document.getElementById("fDescripcion").value = item.descripcion || "";
+      document.getElementById("fImagen").value = item.imageUrl || "";
+      document.getElementById("fAvailable").checked = item.available !== false;
+      openModal("Editar Platillo");
+    };
+
+    window.deleteItem = async (id) => {
+      if (!confirm("¿Eliminar este platillo?")) return;
+      await deleteDoc(doc(db, "menu", id));
+      loadMenu();
+    };
+
+    document.getElementById("btnGuardar").addEventListener("click", async () => {
+      const data = {
+        nombre: document.getElementById("fNombre").value.trim(),
+        categoria: document.getElementById("fCategoria").value,
+        precioMin: Number(document.getElementById("fPrecioMin").value),
+        precioMax: Number(document.getElementById("fPrecioMax").value) || null,
+        descripcion: document.getElementById("fDescripcion").value.trim(),
+        imageUrl: document.getElementById("fImagen").value.trim(),
+        available: document.getElementById("fAvailable").checked,
+        updatedAt: new Date()
+      };
+      if (!data.nombre || !data.precioMin) { alert("Nombre y precio mínimo son obligatorios."); return; }
+      if (currentDocId) {
+        await updateDoc(doc(db, "menu", currentDocId), data);
+      } else {
+        data.createdAt = new Date();
+        await addDoc(collection(db, "menu"), data);
+      }
+      closeModal();
+      loadMenu();
+    });
+
+    document.getElementById("btnLogout").addEventListener("click", async () => {
+      await signOut(auth);
+      window.location.href = "login.html";
+    });
+  </script>
+
+</body>
+</html>
