@@ -1,0 +1,401 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="color-scheme" content="dark">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>PHO CUZ — Dashboard</title>
+  <link href="https://fonts.googleapis.com/css2?family=Cinzel+Decorative:wght@400;700&family=Cinzel:wght@400;500&family=Rajdhani:wght@300;400;500;600&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --dorado: #C49A3C;
+      --dorado-claro: #D4B896;
+      --bg: #0a0300;
+      --surface: #130601;
+      --surface2: #1a0a03;
+      --border: rgba(196,154,60,0.2);
+    }
+
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+
+    body {
+      min-height: 100vh;
+      background: var(--bg);
+      font-family: 'Rajdhani', sans-serif;
+      color: #d4c4a0;
+      display: flex;
+    }
+
+    /* SIDEBAR */
+    .sidebar {
+      width: 240px;
+      min-height: 100vh;
+      background: var(--surface);
+      border-right: 1px solid var(--border);
+      display: flex;
+      flex-direction: column;
+      padding: 2rem 0;
+      position: fixed;
+      top: 0; left: 0; bottom: 0;
+    }
+
+    .sidebar-brand {
+      text-align: center;
+      padding: 0 1.5rem 2rem;
+      border-bottom: 1px solid var(--border);
+      margin-bottom: 1.5rem;
+    }
+
+    .sidebar-brand .logo {
+      font-family: 'Cinzel Decorative', serif;
+      font-size: 1.1rem;
+      letter-spacing: 4px;
+    }
+    .sidebar-brand .logo .pho { color: var(--dorado); }
+    .sidebar-brand .logo .cuz { color: #f5f0e8; }
+    .sidebar-brand .sub {
+      font-size: 9px;
+      letter-spacing: 4px;
+      color: rgba(196,154,60,0.4);
+      text-transform: uppercase;
+      margin-top: 4px;
+    }
+
+    .nav-section {
+      padding: 0 1rem;
+      margin-bottom: 0.5rem;
+    }
+
+    .nav-label {
+      font-size: 9px;
+      letter-spacing: 3px;
+      color: rgba(196,154,60,0.35);
+      text-transform: uppercase;
+      padding: 0 0.5rem;
+      margin-bottom: 0.5rem;
+    }
+
+    .nav-item {
+      display: flex;
+      align-items: center;
+      gap: 0.7rem;
+      padding: 0.65rem 0.8rem;
+      border-radius: 3px;
+      color: rgba(212,180,130,0.7);
+      text-decoration: none;
+      font-size: 0.9rem;
+      letter-spacing: 1px;
+      transition: all 0.15s;
+      cursor: pointer;
+      border: none;
+      background: none;
+      width: 100%;
+      text-align: left;
+    }
+
+    .nav-item:hover, .nav-item.active {
+      background: rgba(196,154,60,0.08);
+      color: var(--dorado);
+    }
+
+    .nav-item .icon { font-size: 1rem; width: 20px; text-align: center; }
+
+    .sidebar-footer {
+      margin-top: auto;
+      padding: 1rem;
+      border-top: 1px solid var(--border);
+    }
+
+    .user-info {
+      font-size: 0.8rem;
+      color: rgba(196,154,60,0.5);
+      letter-spacing: 1px;
+      margin-bottom: 0.5rem;
+      padding: 0 0.5rem;
+      word-break: break-all;
+    }
+
+    .btn-logout {
+      display: block;
+      width: 100%;
+      padding: 0.5rem;
+      background: transparent;
+      border: 1px solid rgba(196,154,60,0.2);
+      border-radius: 2px;
+      color: rgba(196,154,60,0.5);
+      font-family: 'Rajdhani', sans-serif;
+      font-size: 0.8rem;
+      letter-spacing: 3px;
+      text-transform: uppercase;
+      cursor: pointer;
+      transition: all 0.2s;
+    }
+    .btn-logout:hover { border-color: var(--dorado); color: var(--dorado); }
+
+    /* MAIN */
+    .main {
+      margin-left: 240px;
+      flex: 1;
+      padding: 2.5rem;
+      min-height: 100vh;
+    }
+
+    .page-title {
+      font-family: 'Cinzel', serif;
+      font-size: 1.4rem;
+      color: var(--dorado);
+      letter-spacing: 3px;
+      margin-bottom: 0.3rem;
+    }
+
+    .page-sub {
+      font-size: 0.85rem;
+      color: rgba(196,154,60,0.45);
+      letter-spacing: 2px;
+      margin-bottom: 2rem;
+    }
+
+    /* STATS */
+    .stats-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+      gap: 1rem;
+      margin-bottom: 2.5rem;
+    }
+
+    .stat-card {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 4px;
+      padding: 1.5rem;
+      text-align: center;
+    }
+
+    .stat-number {
+      font-family: 'Cinzel', serif;
+      font-size: 2.2rem;
+      color: var(--dorado);
+      line-height: 1;
+    }
+
+    .stat-label {
+      font-size: 10px;
+      letter-spacing: 3px;
+      color: rgba(196,154,60,0.45);
+      text-transform: uppercase;
+      margin-top: 0.4rem;
+    }
+
+    /* QUICK ACTIONS */
+    .section-title {
+      font-family: 'Cinzel', serif;
+      font-size: 0.9rem;
+      color: rgba(196,154,60,0.6);
+      letter-spacing: 3px;
+      text-transform: uppercase;
+      margin-bottom: 1rem;
+    }
+
+    .actions-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+      gap: 1rem;
+    }
+
+    .action-card {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 4px;
+      padding: 1.5rem;
+      text-decoration: none;
+      transition: all 0.2s;
+      cursor: pointer;
+    }
+
+    .action-card:hover {
+      border-color: var(--dorado);
+      background: rgba(196,154,60,0.04);
+    }
+
+    .action-icon {
+      font-size: 1.8rem;
+      margin-bottom: 0.8rem;
+    }
+
+    .action-title {
+      font-family: 'Cinzel', serif;
+      font-size: 0.85rem;
+      color: var(--dorado);
+      letter-spacing: 2px;
+      margin-bottom: 0.3rem;
+    }
+
+    .action-desc {
+      font-size: 0.8rem;
+      color: rgba(196,154,60,0.5);
+      letter-spacing: 1px;
+      line-height: 1.4;
+    }
+
+    /* ROLE BADGE */
+    .role-badge {
+      display: inline-block;
+      padding: 2px 10px;
+      border: 1px solid rgba(196,154,60,0.3);
+      border-radius: 20px;
+      font-size: 10px;
+      letter-spacing: 2px;
+      color: var(--dorado);
+      text-transform: uppercase;
+      margin-left: 0.5rem;
+      vertical-align: middle;
+    }
+
+    /* Hidden by default */
+    .admin-only { display: none; }
+  </style>
+</head>
+<body>
+
+  <!-- SIDEBAR -->
+  <aside class="sidebar">
+    <div class="sidebar-brand">
+      <div class="logo"><span class="pho">PHO</span><span class="cuz"> CUZ</span></div>
+      <div class="sub">Admin Panel</div>
+    </div>
+
+    <div class="nav-section">
+      <div class="nav-label">General</div>
+      <a href="dashboard.html" class="nav-item active">
+        <span class="icon">◆</span> Dashboard
+      </a>
+      <a href="menu-editor.html" class="nav-item">
+        <span class="icon">◎</span> Editor de Menú
+      </a>
+      <a href="social-posts.html" class="nav-item">
+        <span class="icon">◈</span> Posts para Redes
+      </a>
+    </div>
+
+    <div class="nav-section admin-only" id="adminSection">
+      <div class="nav-label">Administración</div>
+      <a href="usuarios.html" class="nav-item">
+        <span class="icon">◇</span> Usuarios
+      </a>
+    </div>
+
+    <div class="sidebar-footer">
+      <div class="user-info" id="userEmail">—</div>
+      <button class="btn-logout" id="btnLogout">Cerrar sesión</button>
+    </div>
+  </aside>
+
+  <!-- MAIN -->
+  <main class="main">
+    <div class="page-title">
+      Dashboard <span class="role-badge" id="roleBadge">—</span>
+    </div>
+    <div class="page-sub">Bienvenido al panel de PHO CUZ</div>
+
+    <div class="stats-grid">
+      <div class="stat-card">
+        <div class="stat-number" id="statMenu">—</div>
+        <div class="stat-label">Platillos en menú</div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-number" id="statActivos">—</div>
+        <div class="stat-label">Disponibles hoy</div>
+      </div>
+      <div class="stat-card admin-only" id="statUsersCard">
+        <div class="stat-number" id="statUsers">—</div>
+        <div class="stat-label">Administradores</div>
+      </div>
+    </div>
+
+    <div class="section-title">Accesos rápidos</div>
+    <div class="actions-grid">
+      <a href="menu-editor.html" class="action-card">
+        <div class="action-icon">◎</div>
+        <div class="action-title">Editor de Menú</div>
+        <div class="action-desc">Agrega, edita o desactiva platillos del menú</div>
+      </a>
+      <a href="social-posts.html" class="action-card">
+        <div class="action-icon">◈</div>
+        <div class="action-title">Posts para Redes</div>
+        <div class="action-desc">Genera imágenes para Instagram y Facebook</div>
+      </a>
+      <a href="../../PAGINAS/menu.html" class="action-card" target="_blank">
+        <div class="action-icon">◇</div>
+        <div class="action-title">Ver Menú Público</div>
+        <div class="action-desc">Previsualiza el menú como lo ven los clientes</div>
+      </a>
+      <a href="usuarios.html" class="action-card admin-only" id="adminCard">
+        <div class="action-icon">◆</div>
+        <div class="action-title">Gestión de Usuarios</div>
+        <div class="action-desc">Crea y administra accesos de administradores</div>
+      </a>
+    </div>
+  </main>
+
+  <script type="module">
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js";
+    import { getAuth, signOut } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-auth.js";
+    import { getFirestore, doc, getDoc, collection, getDocs, query, where } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js";
+
+    const firebaseConfig = {
+      apiKey: "AIzaSyB6Yh15hdO_PWoPanPcuCwzV8PDnslLqoE",
+      authDomain: "phocuz.firebaseapp.com",
+      projectId: "phocuz",
+      storageBucket: "phocuz.firebasestorage.app",
+      messagingSenderId: "241068135242",
+      appId: "1:241068135242:web:93341c5ee0bcbcb5a3e7b3"
+    };
+
+    const app = initializeApp(firebaseConfig);
+    const auth = getAuth(app);
+    const db = getFirestore(app);
+
+    auth.onAuthStateChanged(async user => {
+      if (!user) {
+        window.location.href = "login.html";
+        return;
+      }
+
+      // Cargar datos del admin
+      const adminDoc = await getDoc(doc(db, "admins", user.uid));
+      if (!adminDoc.exists()) {
+        await signOut(auth);
+        window.location.href = "login.html";
+        return;
+      }
+
+      const role = adminDoc.data().role;
+      document.getElementById("userEmail").textContent = user.email;
+      document.getElementById("roleBadge").textContent = role === "global_admin" ? "Global Admin" : "Admin";
+
+      // Mostrar secciones solo para global_admin
+      if (role === "global_admin") {
+        document.querySelectorAll(".admin-only").forEach(el => el.style.display = "block");
+      }
+
+      // Stats del menú
+      const menuSnap = await getDocs(collection(db, "menu"));
+      document.getElementById("statMenu").textContent = menuSnap.size;
+
+      const activosSnap = await getDocs(query(collection(db, "menu"), where("available", "==", true)));
+      document.getElementById("statActivos").textContent = activosSnap.size;
+
+      if (role === "global_admin") {
+        const adminsSnap = await getDocs(collection(db, "admins"));
+        document.getElementById("statUsers").textContent = adminsSnap.size;
+      }
+    });
+
+    document.getElementById("btnLogout").addEventListener("click", async () => {
+      await signOut(auth);
+      window.location.href = "login.html";
+    });
+  </script>
+
+</body>
+</html>
