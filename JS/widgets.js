@@ -8,10 +8,10 @@
 (function () {
 
   const WA_NUMBER  = '526645416181';
-  const GEMINI_KEY = 'AQ.Ab8RN6JczjLfOogf-ngBUEklKinZnyAzf_UY3iOVbSUjDZwqqg';
+  const GROQ_KEY   = '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';
+  const GROQ_MODEL = 'llama-3.1-8b-instant';
   const FS_PROJECT = 'phocuz';
   const FS_API_KEY = 'AIzaSyB6Yh15hdO_PWoPanPcuCwzV8PDnslLqoE';
-  const GEMINI_MODEL = 'gemini-2.5-flash';
 
   // ─── STATE ─────────────────────────────────────────────────
   let menuItems  = [];
@@ -386,38 +386,36 @@ Todos los platillos incluyen: caldo artesanal, fideos de arroz, germinado, albah
 Proteína extra disponible por +$30–$50 MXN.`;
   }
 
-  // ─── GEMINI API ────────────────────────────────────────────
+  // ─── GROQ API ──────────────────────────────────────────────
   async function askGemini(userText) {
-    if (GEMINI_KEY === 'YOUR_GEMINI_API_KEY') {
-      return '⚙️ El chatbot aún no tiene clave de IA configurada. Agrega tu GEMINI_KEY en JS/widgets.js para activarlo.';
+    if (GROQ_KEY === 'YOUR_GROQ_API_KEY') {
+      return '⚙️ El chatbot aún no tiene clave configurada.';
     }
 
-    // Build contents array for Gemini (multi-turn)
-    const contents = [];
-    const isFirstUserMsg = chatMsgs.filter(m => m.role === 'user').length === 1;
-
-    for (let i = 0; i < chatMsgs.length - 1; i++) {
-      contents.push({ role: chatMsgs[i].role, parts: [{ text: chatMsgs[i].text }] });
+    // Construir historial en formato OpenAI
+    const messages = [
+      { role: 'system', content: buildSystemPrompt() }
+    ];
+    for (const msg of chatMsgs) {
+      messages.push({
+        role: msg.role === 'model' ? 'assistant' : 'user',
+        content: msg.text
+      });
     }
 
-    // Inject system prompt on the first user message
-    const lastText = isFirstUserMsg
-      ? `${buildSystemPrompt()}\n\nPrimera pregunta del cliente: ${userText}`
-      : userText;
-
-    contents.push({ role: 'user', parts: [{ text: lastText }] });
-
-    const res = await fetch(
-      `https://generativelanguage.googleapis.com/v1beta/models/${GEMINI_MODEL}:generateContent`,
-      {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-          'x-goog-api-key': GEMINI_KEY
-        },
-        body: JSON.stringify({ contents })
-      }
-    );
+    const res = await fetch('https://api.groq.com/openai/v1/chat/completions', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        'Authorization': `Bearer ${GROQ_KEY}`
+      },
+      body: JSON.stringify({
+        model: GROQ_MODEL,
+        messages,
+        max_tokens: 200,
+        temperature: 0.7
+      })
+    });
 
     if (!res.ok) {
       const err = await res.json().catch(() => ({}));
@@ -425,7 +423,7 @@ Proteína extra disponible por +$30–$50 MXN.`;
     }
 
     const data = await res.json();
-    return data.candidates?.[0]?.content?.parts?.[0]?.text?.trim()
+    return data.choices?.[0]?.message?.content?.trim()
       || 'No pude entender eso. ¿Me puedes repetir?';
   }
 
