@@ -408,10 +408,13 @@ Proteína extra disponible por +$30–$50 MXN.`;
     contents.push({ role: 'user', parts: [{ text: lastText }] });
 
     const res = await fetch(
-      `https://generativelanguage.googleapis.com/v1beta/models/${GEMINI_MODEL}:generateContent?key=${GEMINI_KEY}`,
+      `https://generativelanguage.googleapis.com/v1beta/models/${GEMINI_MODEL}:generateContent`,
       {
         method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
+        headers: {
+          'Content-Type': 'application/json',
+          'x-goog-api-key': GEMINI_KEY
+        },
         body: JSON.stringify({ contents })
       }
     );
