@@ -444,8 +444,9 @@ Proteína extra disponible por +$30–$50 MXN.`;
       removeTyping();
       addBotMsg(reply);
     } catch (e) {
+      console.error('PHO CUZ chatbot error:', e);
       removeTyping();
-      addBotMsg('Error: ' + (e.message || 'No se pudo conectar con el asistente.'));
+      addBotMsg('Error: ' + (e.message || 'No se pudo conectar.'));
     }
 
     sendBtn.disabled = false;
