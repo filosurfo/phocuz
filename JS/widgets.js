@@ -8,7 +8,7 @@
 (function () {
 
   const WA_NUMBER  = '526645416181';
-  const GEMINI_KEY = 'AQ.Ab8RN6KR3-WYPVvUvMEcVBil6Mt_wai09yAkCxMuCb57GwbT-g';
+  const GEMINI_KEY = 'AQ.Ab8RN6JczjLfOogf-ngBUEklKinZnyAzf_UY3iOVbSUjDZwqqg';
   const FS_PROJECT = 'phocuz';
   const FS_API_KEY = 'AIzaSyB6Yh15hdO_PWoPanPcuCwzV8PDnslLqoE';
   const GEMINI_MODEL = 'gemini-2.5-flash';
