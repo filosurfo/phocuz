@@ -11,7 +11,7 @@
   const GEMINI_KEY = 'AQ.Ab8RN6KR3-WYPVvUvMEcVBil6Mt_wai09yAkCxMuCb57GwbT-g';
   const FS_PROJECT = 'phocuz';
   const FS_API_KEY = 'AIzaSyB6Yh15hdO_PWoPanPcuCwzV8PDnslLqoE';
-  const GEMINI_MODEL = 'gemini-1.5-flash';
+  const GEMINI_MODEL = 'gemini-2.5-flash';
 
   // ─── STATE ─────────────────────────────────────────────────
   let menuItems  = [];
@@ -442,7 +442,7 @@ Proteína extra disponible por +$30–$50 MXN.`;
       addBotMsg(reply);
     } catch (e) {
       removeTyping();
-      addBotMsg('Hubo un problema al conectar con el asistente. Intenta de nuevo en un momento.');
+      addBotMsg('Error: ' + (e.message || 'No se pudo conectar con el asistente.'));
     }
 
     sendBtn.disabled = false;
