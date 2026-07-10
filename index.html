@@ -6,6 +6,13 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>PHO CUZ — Noodle Soup</title>
   <link rel="stylesheet" href="CSS/styles.css">
+  <link rel="manifest" href="manifest.json">
+  <meta name="theme-color" content="#C49A3C">
+  <meta name="mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+  <meta name="apple-mobile-web-app-title" content="PHO CUZ">
+  <link rel="apple-touch-icon" href="IMAGENES/icon-192.png">
 </head>
 <body>
 
@@ -96,6 +103,11 @@
     <p style="font-size:0.7rem;color:rgba(196,154,60,0.5);letter-spacing:2px;margin-top:0.8rem;text-transform:uppercase;">© 2025 PHO CUZ · Jesús & Sujey · Todos los derechos reservados</p>
   </footer>
 
-  <script src="JS/widgets.js?v=3"></script>
+  <script src="JS/widgets.js?v=4"></script>
+  <script>
+    if ('serviceWorker' in navigator) {
+      navigator.serviceWorker.register('/phocuz/sw.js');
+    }
+  </script>
 </body>
 </html>

@@ -253,6 +253,20 @@
 
     /* Hidden by default */
     .admin-only { display: none; }
+
+    /* Pedidos table */
+    .pedidos-table { width:100%; border-collapse:collapse; font-size:0.82rem; }
+    .pedidos-table th {
+      text-align:left; padding:0.5rem 0.75rem;
+      font-size:9px; letter-spacing:3px; color:rgba(196,154,60,0.45);
+      text-transform:uppercase; border-bottom:1px solid var(--border);
+    }
+    .pedidos-table td { padding:0.6rem 0.75rem; border-bottom:1px solid rgba(196,154,60,0.06); color:#d4c4a0; vertical-align:top; }
+    .pedidos-table tr:hover td { background:rgba(196,154,60,0.03); }
+    .pedidos-items { color:rgba(212,180,130,0.6); font-size:0.75rem; }
+    .pedidos-total { color:var(--dorado); font-weight:600; white-space:nowrap; }
+    .pedidos-loc { color:rgba(196,154,60,0.4); font-size:0.72rem; }
+    .pedidos-empty { color:rgba(196,154,60,0.35); font-size:0.85rem; letter-spacing:2px; padding:1.5rem 0; }
   </style>
 </head>
 <body>
@@ -306,10 +320,28 @@
         <div class="stat-number" id="statActivos">—</div>
         <div class="stat-label">Disponibles hoy</div>
       </div>
+      <div class="stat-card">
+        <div class="stat-number" id="statPedidosHoy">—</div>
+        <div class="stat-label">Pedidos hoy</div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-number" id="statPedidosSemana">—</div>
+        <div class="stat-label">Pedidos esta semana</div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-number" id="statIngresos" style="font-size:1.4rem;">—</div>
+        <div class="stat-label">Ingresos estimados hoy</div>
+      </div>
       <div class="stat-card admin-only" id="statUsersCard">
         <div class="stat-number" id="statUsers">—</div>
         <div class="stat-label">Administradores</div>
       </div>
+    </div>
+
+    <!-- PEDIDOS RECIENTES -->
+    <div class="section-title" style="margin-top:2rem;">Pedidos recientes</div>
+    <div id="pedidosContainer" style="margin-bottom:2rem;">
+      <div style="color:rgba(196,154,60,0.4);font-size:0.85rem;letter-spacing:2px;">Cargando...</div>
     </div>
 
     <div class="section-title">Accesos rápidos</div>
@@ -388,6 +420,57 @@
       if (role === "global_admin") {
         const adminsSnap = await getDocs(collection(db, "admins"));
         document.getElementById("statUsers").textContent = adminsSnap.size;
+      }
+
+      // ── Pedidos stats ──
+      const pedidosSnap = await getDocs(collection(db, "pedidos"));
+      const pedidos = [];
+      pedidosSnap.forEach(d => pedidos.push({ id: d.id, ...d.data() }));
+
+      // Ordenar por timestamp desc
+      pedidos.sort((a, b) => new Date(b.timestamp) - new Date(a.timestamp));
+
+      const now = new Date();
+      const startOfDay = new Date(now.getFullYear(), now.getMonth(), now.getDate());
+      const startOfWeek = new Date(startOfDay);
+      startOfWeek.setDate(startOfDay.getDate() - startOfDay.getDay());
+
+      const pedidosHoy    = pedidos.filter(p => new Date(p.timestamp) >= startOfDay);
+      const pedidosSemana = pedidos.filter(p => new Date(p.timestamp) >= startOfWeek);
+      const ingresosHoy   = pedidosHoy.reduce((sum, p) => sum + (parseInt(p.total) || 0), 0);
+
+      document.getElementById("statPedidosHoy").textContent    = pedidosHoy.length;
+      document.getElementById("statPedidosSemana").textContent = pedidosSemana.length;
+      document.getElementById("statIngresos").textContent      = ingresosHoy ? `$${ingresosHoy}` : '$0';
+
+      // Tabla de pedidos recientes (últimos 20)
+      const container = document.getElementById("pedidosContainer");
+      const recientes = pedidos.slice(0, 20);
+
+      if (recientes.length === 0) {
+        container.innerHTML = '<div class="pedidos-empty">Aún no hay pedidos registrados.</div>';
+      } else {
+        const rows = recientes.map(p => {
+          const fecha = new Date(p.timestamp);
+          const fechaStr = fecha.toLocaleDateString('es-MX', { month:'short', day:'numeric' }) + ' ' +
+                           fecha.toLocaleTimeString('es-MX', { hour:'2-digit', minute:'2-digit' });
+          const items = Array.isArray(p.items) ? p.items.map(i => i.nombre).join(', ') : '—';
+          const loc = [p.ciudad, p.estado].filter(Boolean).join(', ') || '—';
+          return `<tr>
+            <td>${fechaStr}</td>
+            <td><div>${items}</div></td>
+            <td class="pedidos-total">$${p.total || 0}</td>
+            <td class="pedidos-loc">${loc}</td>
+          </tr>`;
+        }).join('');
+
+        container.innerHTML = `
+          <table class="pedidos-table">
+            <thead><tr>
+              <th>Fecha</th><th>Platillos</th><th>Total</th><th>Ubicación</th>
+            </tr></thead>
+            <tbody>${rows}</tbody>
+          </table>`;
       }
     });
 
