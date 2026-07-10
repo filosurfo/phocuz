@@ -329,20 +329,6 @@
   // ─── SAVE ORDER TO FIRESTORE ───────────────────────────────
   async function saveOrder() {
     try {
-      // Obtener IP y ciudad
-      let ip = '', ciudad = '', estado = '';
-      try {
-        const ipRes = await fetch('https://api.ipify.org?format=json');
-        const ipData = await ipRes.json();
-        ip = ipData.ip || '';
-        if (ip) {
-          const geoRes = await fetch(`https://ip-api.com/json/${ip}?fields=city,regionName`);
-          const geoData = await geoRes.json();
-          ciudad = geoData.city || '';
-          estado = geoData.regionName || '';
-        }
-      } catch(e) { /* IP opcional, no bloquear */ }
-
       const orderDoc = {
         fields: {
           items: {
@@ -360,9 +346,6 @@
           },
           total:     { integerValue: String(currentOrder.total) },
           timestamp: { stringValue: new Date().toISOString() },
-          ip:        { stringValue: ip },
-          ciudad:    { stringValue: ciudad },
-          estado:    { stringValue: estado },
           status:    { stringValue: 'pending' }
         }
       };
