@@ -1,16 +1,16 @@
 // PHO CUZ — Service Worker
-const CACHE = 'phocuz-v1';
+const CACHE = 'phocuz-v2';
 const PRECACHE = [
-  '/phocuz/',
-  '/phocuz/index.html',
-  '/phocuz/PAGINAS/menu.html',
-  '/phocuz/PAGINAS/nosotros.html',
-  '/phocuz/PAGINAS/contacto.html',
-  '/phocuz/CSS/styles.css',
-  '/phocuz/JS/widgets.js',
-  '/phocuz/IMAGENES/logo.svg',
-  '/phocuz/IMAGENES/icon-192.png',
-  '/phocuz/IMAGENES/icon-512.png'
+  '/',
+  '/index.html',
+  '/PAGINAS/menu.html',
+  '/PAGINAS/nosotros.html',
+  '/PAGINAS/contacto.html',
+  '/CSS/styles.css',
+  '/JS/widgets.js',
+  '/IMAGENES/logo.svg',
+  '/IMAGENES/icon-192.png',
+  '/IMAGENES/icon-512.png'
 ];
 
 self.addEventListener('install', e => {
