@@ -3,7 +3,7 @@
 // ============================================================
 (function () {
 
-  const WA_NUMBER  = '526645416181';
+  const WA_NUMBER  = '';
   const GROQ_KEY   = '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';
   const GROQ_MODEL = 'llama-3.1-8b-instant';
   const FS_PROJECT = 'phocuz';
@@ -124,7 +124,8 @@
     <svg viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
       <path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/>
     </svg>`;
-  document.body.appendChild(botFab);
+  // Chatbot desactivado — solo WhatsApp visible
+  // document.body.appendChild(botFab);
 
   // ─── PANEL ─────────────────────────────────────────────────
   const panel = document.createElement('div');
