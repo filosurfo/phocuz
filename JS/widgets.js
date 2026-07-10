@@ -442,4 +442,53 @@ Proteína extra disponible: +$30–$50 MXN.`;
 
   setTimeout(() => { if (!chatOpen) dotEl.style.display = 'block'; }, 4000);
 
+  // ─── PWA INSTALL CHIP ──────────────────────────────────────
+  (function () {
+    let deferredPrompt = null;
+
+    const chipStyle = document.createElement('style');
+    chipStyle.textContent = `
+      .pcw-install-chip {
+        display: inline-flex; align-items: center; gap: 5px;
+        background: transparent; border: 1px solid rgba(196,154,60,0.3);
+        border-radius: 20px; padding: 3px 10px 3px 8px;
+        color: rgba(196,154,60,0.55); font-size: 0.68rem;
+        letter-spacing: 1.5px; text-transform: uppercase;
+        cursor: pointer; transition: all 0.2s; font-family: 'Rajdhani',sans-serif;
+        margin-top: 0.5rem;
+      }
+      .pcw-install-chip:hover { border-color: #C49A3C; color: #C49A3C; }
+      .pcw-install-chip svg { width: 12px; height: 12px; fill: currentColor; flex-shrink:0; }
+    `;
+    document.head.appendChild(chipStyle);
+
+    function createChip() {
+      const chip = document.createElement('button');
+      chip.className = 'pcw-install-chip';
+      chip.title = 'Instalar app';
+      chip.innerHTML = `<svg viewBox="0 0 24 24"><path d="M19 9h-4V3H9v6H5l7 7 7-7zm-8 2V5h2v6h1.17L12 13.17 9.83 11H11zm-6 7h14v2H5z"/></svg>Instalar app`;
+      chip.addEventListener('click', async () => {
+        if (!deferredPrompt) return;
+        deferredPrompt.prompt();
+        const { outcome } = await deferredPrompt.userChoice;
+        if (outcome === 'accepted') {
+          document.querySelectorAll('.pcw-install-chip').forEach(el => el.remove());
+        }
+        deferredPrompt = null;
+      });
+      return chip;
+    }
+
+    window.addEventListener('beforeinstallprompt', e => {
+      e.preventDefault();
+      deferredPrompt = e;
+      const footers = document.querySelectorAll('footer');
+      footers.forEach(f => f.appendChild(createChip()));
+    });
+
+    window.addEventListener('appinstalled', () => {
+      document.querySelectorAll('.pcw-install-chip').forEach(el => el.remove());
+    });
+  })();
+
 })();
