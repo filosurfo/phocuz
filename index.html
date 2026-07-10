@@ -101,43 +101,7 @@
       <a href="PAGINAS/contacto.html">Contacto</a>
     </div>
     <p style="font-size:0.7rem;color:rgba(196,154,60,0.5);letter-spacing:2px;margin-top:0.8rem;text-transform:uppercase;">© 2025 PHO CUZ · Jesús & Sujey · Todos los derechos reservados</p>
-    <button id="pwaInstallBtn" style="display:none;margin-top:1rem;background:transparent;border:1px solid rgba(196,154,60,0.3);color:rgba(196,154,60,0.6);font-family:inherit;font-size:0.65rem;letter-spacing:3px;text-transform:uppercase;padding:0.4rem 1rem;border-radius:20px;cursor:pointer;transition:all 0.2s;">⬇ Instalar app</button>
-    <div id="pwaIosHint" style="display:none;margin-top:0.8rem;font-size:0.65rem;color:rgba(196,154,60,0.45);letter-spacing:1.5px;">Toca compartir → "Añadir a pantalla de inicio"</div>
   </footer>
-
-  <script>
-    // PWA install button
-    let deferredPrompt;
-    const btn = document.getElementById('pwaInstallBtn');
-    const iosHint = document.getElementById('pwaIosHint');
-
-    // Android/Chrome
-    window.addEventListener('beforeinstallprompt', e => {
-      e.preventDefault();
-      deferredPrompt = e;
-      btn.style.display = 'inline-block';
-    });
-
-    btn.addEventListener('click', async () => {
-      if (deferredPrompt) {
-        deferredPrompt.prompt();
-        const { outcome } = await deferredPrompt.userChoice;
-        deferredPrompt = null;
-        if (outcome === 'accepted') btn.style.display = 'none';
-      }
-    });
-
-    btn.addEventListener('mouseenter', () => { btn.style.borderColor = 'rgba(196,154,60,0.7)'; btn.style.color = '#C49A3C'; });
-    btn.addEventListener('mouseleave', () => { btn.style.borderColor = 'rgba(196,154,60,0.3)'; btn.style.color = 'rgba(196,154,60,0.6)'; });
-
-    // iOS Safari
-    const isIos = /iphone|ipad|ipod/i.test(navigator.userAgent);
-    const isStandalone = window.matchMedia('(display-mode: standalone)').matches;
-    if (isIos && !isStandalone) iosHint.style.display = 'block';
-
-    // Ocultar si ya está instalada
-    if (isStandalone) { btn.style.display = 'none'; iosHint.style.display = 'none'; }
-  </script>
 
   <script src="JS/widgets.js?v=5"></script>
   <script>
