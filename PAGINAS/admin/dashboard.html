@@ -265,7 +265,7 @@
     .pedidos-table tr:hover td { background:rgba(196,154,60,0.03); }
     .pedidos-items { color:rgba(212,180,130,0.6); font-size:0.75rem; }
     .pedidos-total { color:var(--dorado); font-weight:600; white-space:nowrap; }
-    .pedidos-loc { color:rgba(196,154,60,0.4); font-size:0.72rem; }
+
     .pedidos-empty { color:rgba(196,154,60,0.35); font-size:0.85rem; letter-spacing:2px; padding:1.5rem 0; }
   </style>
 </head>
@@ -455,19 +455,17 @@
           const fechaStr = fecha.toLocaleDateString('es-MX', { month:'short', day:'numeric' }) + ' ' +
                            fecha.toLocaleTimeString('es-MX', { hour:'2-digit', minute:'2-digit' });
           const items = Array.isArray(p.items) ? p.items.map(i => i.nombre).join(', ') : '—';
-          const loc = [p.ciudad, p.estado].filter(Boolean).join(', ') || '—';
           return `<tr>
             <td>${fechaStr}</td>
             <td><div>${items}</div></td>
             <td class="pedidos-total">$${p.total || 0}</td>
-            <td class="pedidos-loc">${loc}</td>
           </tr>`;
         }).join('');
 
         container.innerHTML = `
           <table class="pedidos-table">
             <thead><tr>
-              <th>Fecha</th><th>Platillos</th><th>Total</th><th>Ubicación</th>
+              <th>Fecha</th><th>Platillos</th><th>Total</th>
             </tr></thead>
             <tbody>${rows}</tbody>
           </table>`;
